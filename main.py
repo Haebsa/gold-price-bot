@@ -18,7 +18,16 @@ data = {
     "text": message
 }
 
-response = requests.post(url, data=data)
+response = requests.post(
+    url,
+    json={
+        "chat_id": "@goldha",
+        "text": message
+    }
+)
+
+print(response.status_code)
+print(response.text)
 
 print("Status:", response.status_code)
 print("Response:", response.text)
