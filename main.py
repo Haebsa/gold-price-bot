@@ -3,7 +3,7 @@ import requests
 
 TOKEN = os.environ.get("BALE_TOKEN")
 
-CHANNEL_ID = https://ble.ir/goldha
+CHANNEL_ID =  "goldha"
 
 message = """
 ✅ ربات قیمت طلا و دلار فعال شد
