@@ -27,18 +27,17 @@ text = re.search(r"navasanret\('(.*)'\);", text, re.S).group(1)
 
 text = text.replace("\\r\\n"," ")
 text = text.replace("\\/","/")
+text = text.replace("\\\\","")
 text = html.unescape(text)
-
 
 # =========================
 # استخراج قیمت ها
 # =========================
-
 def get_price(id):
 
-    pattern = rf'<tr id="{id}".*?<td class="val">(.*?)</td>'
+    pattern = rf'id=\\"{id}\\".*?class=\\"val\\">(.*?)<\\/td>'
 
-    result = re.search(pattern,text,re.S)
+    result = re.search(pattern, text, re.S)
 
     if result:
         return result.group(1)
@@ -139,3 +138,5 @@ requests.post(
 
 
 print(message)
+print("USD:",usd)
+print("GOLD:",gold18)
