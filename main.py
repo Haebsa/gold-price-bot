@@ -1,11 +1,17 @@
 import os
 import requests
-import json
 
 TOKEN = os.environ["BALE_TOKEN"]
+CHAT_ID = 4540440927
 
-url = f"https://tapi.bale.ai/bot{TOKEN}/getUpdates"
+url = f"https://tapi.bale.ai/bot{TOKEN}/sendMessage"
 
-response = requests.get(url)
+data = {
+    "chat_id": CHAT_ID,
+    "text": "🎉 تست موفق!\n\nربات با موفقیت به کانال متصل شد."
+}
 
-print(json.dumps(response.json(), indent=2, ensure_ascii=False))
+response = requests.post(url, json=data)
+
+print("Status:", response.status_code)
+print("Response:", response.text)
