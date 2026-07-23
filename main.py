@@ -4,8 +4,8 @@ import requests
 
 import requests
 
-TOKEN = "CABFGI0XPZOLZGBRNVUBSVWJERIIJXRMCOITJBAENARPAUYCGVHBEFJHDXOHEETC"
-CHANNEL = "@gold_pric"
+TOKEN2 = "CABFGI0XPZOLZGBRNVUBSVWJERIIJXRMCOITJBAENARPAUYCGVHBEFJHDXOHEETC"
+CHANNEL2 = "@gold_pric"
 
 text = """
 💰 قیمت لحظه‌ای
@@ -16,10 +16,10 @@ text = """
 🕒 بروزرسانی خودکار
 """
 
-url = f"https://botapi.rubika.ir/v3/{TOKEN}/sendMessage"
+url = f"https://botapi.rubika.ir/v3/{TOKEN2}/sendMessage"
 
 data = {
-    "chat_id": CHANNEL,
+    "chat_id": CHANNEL2,
     "text": text
 }
 
