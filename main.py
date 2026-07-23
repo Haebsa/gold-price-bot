@@ -1,9 +1,9 @@
 import os
 import requests
 
-TOKEN = os.environ.get("BALE_TOKEN")
+TOKEN = os.environ["BALE_TOKEN"]
 
-url = f"https://tapi.bale.ai/bot{TOKEN}/getMe"
+url = f"https://tapi.bale.ai/bot{TOKEN}/getUpdates"
 
 response = requests.get(url)
 
