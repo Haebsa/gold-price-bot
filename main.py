@@ -52,8 +52,11 @@ if price is None:
 # =====================
 # متن پیام
 # =====================
+# =====================
+# متن مخصوص بله
+# =====================
 
-message = f"""
+bale_message = f"""
 💵 قیمت لحظه‌ای دلار
 
 💰 {price} ریال
@@ -61,9 +64,26 @@ message = f"""
 🕒 آخرین بروزرسانی:
 {time}
 
-📢 @goldha
+📢 کانال بله:
+@goldha
 """
 
+
+# =====================
+# متن مخصوص روبیکا
+# =====================
+
+rubika_message = f"""
+💵 قیمت لحظه‌ای دلار
+
+💰 {price} ریال
+
+🕒 آخرین بروزرسانی:
+{time}
+
+📢 کانال روبیکا:
+@gold_pric
+"""
 
 # =====================
 # ارسال به بله
@@ -74,7 +94,7 @@ bale_url = f"https://tapi.bale.ai/bot{BALE_TOKEN}/sendMessage"
 
 bale_data = {
     "chat_id": BALE_CHANNEL,
-    "text": message
+    "text": bale_message
 }
 
 
@@ -98,7 +118,7 @@ rubika_url = f"https://botapi.rubika.ir/v3/{RUBIK_TOKEN}/sendMessage"
 
 rubika_data = {
     "chat_id": RUBIKA_CHANNEL,
-    "text": message
+    "text": rubika_message
 }
 
 
