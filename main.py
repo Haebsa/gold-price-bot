@@ -2,30 +2,7 @@ import os
 import re
 import requests
 
-import requests
 
-TOKEN2 = "CABFGI0XPZOLZGBRNVUBSVWJERIIJXRMCOITJBAENARPAUYCGVHBEFJHDXOHEETC"
-CHANNEL2 = "@gold_pric"
-
-text = """
-💰 قیمت لحظه‌ای
-
-💵 دلار:
-1,922,000 تومان
-
-🕒 بروزرسانی خودکار
-"""
-
-url = f"https://botapi.rubika.ir/v3/{TOKEN2}/sendMessage"
-
-data = {
-    "chat_id": CHANNEL2,
-    "text": text
-}
-
-r = requests.post(url, json=data)
-
-print(r.text)
 TOKEN = os.environ["BALE_TOKEN"]
 
 CHANNEL_ID = "@goldha"
@@ -68,7 +45,30 @@ response = requests.post(send_url, data={
 print(response.status_code)
 print(response.text)
 
+import requests
 
+TOKEN2 = "CABFGI0XPZOLZGBRNVUBSVWJERIIJXRMCOITJBAENARPAUYCGVHBEFJHDXOHEETC"
+CHANNEL2 = "@gold_pric"
+
+text = """
+💰 قیمت لحظه‌ای
+
+💵 دلار:
+1,922,000 تومان
+
+🕒 بروزرسانی خودکار
+"""
+
+url = f"https://botapi.rubika.ir/v3/{TOKEN2}/sendMessage"
+
+data = {
+    "chat_id": CHANNEL2,
+    "text": text
+}
+
+r = requests.post(url, json=data)
+
+print(r.text)
 
 
 
