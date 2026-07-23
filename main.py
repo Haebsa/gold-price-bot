@@ -1,17 +1,12 @@
-import os
 import requests
 
-TOKEN = os.environ["BALE_TOKEN"]
-CHAT_ID = 4540440927
+url = "https://www.tgju.org/"
 
-url = f"https://tapi.bale.ai/bot{TOKEN}/sendMessage"
-
-data = {
-    "chat_id": CHAT_ID,
-    "text": "🎉 تست موفق!\n\nربات با موفقیت به کانال متصل شد."
+headers = {
+    "User-Agent": "Mozilla/5.0"
 }
 
-response = requests.post(url, json=data)
+response = requests.get(url, headers=headers)
 
 print("Status:", response.status_code)
-print("Response:", response.text)
+print(response.text[:1000])
