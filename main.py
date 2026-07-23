@@ -4,7 +4,7 @@ import requests
 
 TOKEN = os.environ["BALE_TOKEN"]
 
-CHANNEL_ID = "goldha"
+CHANNEL_ID = "@goldha"
 
 # دریافت قیمت دلار از API رسمی TGJU
 url = "https://api.tgju.org/v1/market/list-data?category_ids=28070&extra_data=1&lang=fa"
