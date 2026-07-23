@@ -3,6 +3,15 @@ import re
 import requests
 import html
 
+def fix_unicode_numbers(s):
+    if not s:
+        return s
+
+    def replace_unicode(match):
+        code = match.group(1)
+        return chr(int(code, 16))
+
+    return re.sub(r'u([0-9a-fA-F]{4})', replace_unicode, s)
 
 BALE_TOKEN = os.environ["BALE_TOKEN"]
 RUBIK_TOKEN = os.environ["RUBIK_TOKEN"]
@@ -40,7 +49,7 @@ def get_price(id):
     result = re.search(pattern, text, re.S)
 
     if result:
-        return result.group(1)
+      return fix_unicode_numbers(result.group(1))
 
     return "-"
 
