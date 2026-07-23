@@ -1,132 +1,141 @@
 import os
 import re
 import requests
+import html
 
-# =====================
-# توکن‌ها
-# =====================
 
 BALE_TOKEN = os.environ["BALE_TOKEN"]
 RUBIK_TOKEN = os.environ["RUBIK_TOKEN"]
-
-
-# =====================
-# کانال‌ها
-# =====================
 
 BALE_CHANNEL = "@goldha"
 RUBIKA_CHANNEL = "@gold_pric"
 
 
-# =====================
-# دریافت قیمت دلار TGJU
-# =====================
+# =========================
+# دریافت قیمت از نواسان
+# =========================
 
-url = "https://api.tgju.org/v1/market/list-data?category_ids=28070&extra_data=1&lang=fa"
+url = "https://www.navasan.tech/wp-navasan.php?usd&eur&aed&usdt&xau&18ayar&sekkeh&bahar&nim&rob&gerami"
 
-headers = {
-    "User-Agent": "Mozilla/5.0"
-}
+response = requests.get(url)
 
-response = requests.get(url, headers=headers)
-
-data = response.json()["data"]
+text = response.text
 
 
-price = None
-time = None
+# حذف navasanret
+text = re.search(r"navasanret\('(.*)'\);", text, re.S).group(1)
+
+text = text.replace("\\r\\n"," ")
+text = text.replace("\\/","/")
+text = html.unescape(text)
 
 
-for row in data:
-    if "profile/price_dollar_rl" in row[0]:
-        price = re.sub("<.*?>", "", row[1]).strip()
-        time = row[2]
-        break
+# =========================
+# استخراج قیمت ها
+# =========================
+
+def get_price(id):
+
+    pattern = rf'<tr id="{id}".*?<td class="val">(.*?)</td>'
+
+    result = re.search(pattern,text,re.S)
+
+    if result:
+        return result.group(1)
+
+    return "-"
 
 
-if price is None:
-    print("قیمت پیدا نشد")
-    exit()
+usd = get_price("usd")
+eur = get_price("eur")
+aed = get_price("aed")
+usdt = get_price("usdt")
+xau = get_price("xau")
+gold18 = get_price("18ayar")
+sekkeh = get_price("sekkeh")
+bahar = get_price("bahar")
+nim = get_price("nim")
+rob = get_price("rob")
+gerami = get_price("gerami")
 
 
-# =====================
+
+# =========================
 # متن پیام
-# =====================
-# =====================
-# متن مخصوص بله
-# =====================
+# =========================
 
-bale_message = f"""
-💵 قیمت لحظه‌ای دلار
+message = f"""
+📊 قیمت لحظه‌ای طلا و ارز
 
-💰 {price} ریال
+💵 دلار آمریکا:
+{usd} تومان
 
-🕒 آخرین بروزرسانی:
-{time}
+💶 یورو:
+{eur} تومان
 
-📢 کانال بله:
-@goldha
+💲 تتر:
+{usdt} تومان
+
+💰 درهم:
+{aed} تومان
+
+
+🟡 طلای ۱۸ عیار:
+{gold18} تومان
+
+🟠 اونس طلا:
+{xau} تومان
+
+
+🪙 سکه امامی:
+{sekkeh} تومان
+
+🪙 سکه بهار آزادی:
+{bahar} تومان
+
+🪙 نیم سکه:
+{nim} تومان
+
+🪙 ربع سکه:
+{rob} تومان
+
+🪙 سکه گرمی:
+{gerami} تومان
+
+
+⏰ بروزرسانی خودکار
+
+📢 @goldha
 """
 
 
-# =====================
-# متن مخصوص روبیکا
-# =====================
 
-rubika_message = f"""
-💵 قیمت لحظه‌ای دلار
+# =========================
+# ارسال بله
+# =========================
 
-💰 {price} ریال
-
-🕒 آخرین بروزرسانی:
-{time}
-
-📢 کانال روبیکا:
-@gold_pric
-"""
-
-# =====================
-# ارسال به بله
-# =====================
-
-bale_url = f"https://tapi.bale.ai/bot{BALE_TOKEN}/sendMessage"
-
-
-bale_data = {
-    "chat_id": BALE_CHANNEL,
-    "text": bale_message
-}
-
-
-bale_response = requests.post(
-    bale_url,
-    data=bale_data
+requests.post(
+    f"https://tapi.bale.ai/bot{BALE_TOKEN}/sendMessage",
+    data={
+        "chat_id": BALE_CHANNEL,
+        "text": message
+    }
 )
 
 
-print("Bale:")
-print(bale_response.text)
 
+# =========================
+# ارسال روبیکا
+# =========================
 
-
-# =====================
-# ارسال به روبیکا
-# =====================
-
-rubika_url = f"https://botapi.rubika.ir/v3/{RUBIK_TOKEN}/sendMessage"
-
-
-rubika_data = {
-    "chat_id": RUBIKA_CHANNEL,
-    "text": rubika_message
-}
-
-
-rubika_response = requests.post(
-    rubika_url,
-    json=rubika_data
+requests.post(
+    f"https://botapi.rubika.ir/v3/{RUBIK_TOKEN}/sendMessage",
+    json={
+        "chat_id": RUBIKA_CHANNEL,
+        "text": message
+    }
 )
 
 
-print("Rubika:")
-print(rubika_response.text)
+
+print(message)
