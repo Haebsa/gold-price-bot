@@ -1,17 +1,9 @@
 import os
-import re
 import requests
-import html
 
-def fix_unicode_numbers(s):
-    if not s:
-        return s
-
-    def replace_unicode(match):
-        code = match.group(1)
-        return chr(int(code, 16))
-
-    return re.sub(r'u([0-9a-fA-F]{4})', replace_unicode, s)
+#=========================
+# تنظیمات
+#=========================
 
 BALE_TOKEN = os.environ["BALE_TOKEN"]
 RUBIK_TOKEN = os.environ["RUBIK_TOKEN"]
@@ -19,133 +11,89 @@ RUBIK_TOKEN = os.environ["RUBIK_TOKEN"]
 BALE_CHANNEL = "@goldha"
 RUBIKA_CHANNEL = "@gold_pric"
 
+BRS_KEY = "YOUR_BRS_API_KEY"
 
-# =========================
-# دریافت قیمت از نواسان
-# =========================
+headers = {
+    "User-Agent":"Mozilla/5.0"
+}
 
-url = "https://www.navasan.tech/wp-navasan.php?usd&eur&aed&usdt&xau&18ayar&sekkeh&bahar&nim&rob&gerami"
+#=========================
+# دریافت اطلاعات
+#=========================
 
-response = requests.get(url)
+url = f"https://Api.BrsApi.ir/Market/Gold_Currency.php?key={BRS_KEY}"
 
-text = response.text
+data = requests.get(url,headers=headers).json()
 
+gold = {i["symbol"]:i for i in data["gold"]}
+cur = {i["symbol"]:i for i in data["currency"]}
 
-# حذف navasanret
-text = re.search(r"navasanret\('(.*)'\);", text, re.S).group(1)
+def price(dic,key):
+    return f'{dic[key]["price"]:,}'
 
-text = text.replace("\\r\\n"," ")
-text = text.replace("\\/","/")
-text = text.replace("\\\\","")
-text = html.unescape(text)
+time = cur["USDT_IRT"]["time"]
+date = cur["USDT_IRT"]["date"]
 
-# =========================
-# استخراج قیمت ها
-# =========================
-def get_price(id):
-
-    pattern = rf'id=\\"{id}\\".*?class=\\"val\\">(.*?)<\\/td>'
-
-    result = re.search(pattern, text, re.S)
-
-    if result:
-      return fix_unicode_numbers(result.group(1))
-
-    return "-"
-
-
-usd = get_price("usd")
-eur = get_price("eur")
-aed = get_price("aed")
-usdt = get_price("usdt")
-xau = get_price("xau")
-gold18 = get_price("18ayar")
-sekkeh = get_price("sekkeh")
-bahar = get_price("bahar")
-nim = get_price("nim")
-rob = get_price("rob")
-gerami = get_price("gerami")
-
-
-
-# =========================
+#=========================
 # متن پیام
-# =========================
+#=========================
 
-message = f"""
-📊 قیمت لحظه‌ای طلا و ارز
+message = f"""#قیمت لحظه ای #طلا ، #دلار و ارز 📝
 
-💵 دلار آمریکا:
-{usd} تومان
+⏰ {date} - ساعت {time}
 
-💶 یورو:
-{eur} تومان
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
-💲 تتر:
-{usdt} تومان
+💸 دلار آمریکا : {price(cur,"USD")} تومان
+💸 تتر : {price(cur,"USDT_IRT")} تومان
+💶 یورو : {price(cur,"EUR")} تومان
+💷 پوند انگلیسی : {price(cur,"GBP")} تومان
+💵 دلار استرالیا : {price(cur,"AUD")} تومان
+💵 دلار کانادا : {price(cur,"CAD")} تومان
+💵 درهم امارات : {price(cur,"AED")} تومان
+💵 ریال قطر : {price(cur,"QAR")} تومان
+💵 افغانی : {price(cur,"AFN")} تومان
+💵 یوان چین : {price(cur,"CNY")} تومان
+💶 لیر ترکیه : {price(cur,"TRY")} تومان
 
-💰 درهم:
-{aed} تومان
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
+🟡 گرم 18 عیار : {price(gold,"IR_GOLD_18K")} تومان
+🟠 گرم 24 عیار : {price(gold,"IR_GOLD_24K")} تومان
+🟡 طلای آب شده : {price(gold,"IR_GOLD_MELTED")} تومان
+🟡 اونس طلا : {price(gold,"XAUUSD")} دلار
 
-🟡 طلای ۱۸ عیار:
-{gold18} تومان
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
-🟠 اونس طلا:
-{xau} تومان
-
-
-🟡 سکه امامی:
-{sekkeh} تومان
-
-🟡 سکه بهار آزادی:
-{bahar} تومان
-
-🟡 نیم سکه:
-{nim} تومان
-
-🟡 ربع سکه:
-{rob} تومان
-
-🟡 سکه گرمی:
-{gerami} تومان
-
-
-⏰ بروزرسانی خودکار
-
-📢 @goldha
+🌕 سکه امامی : {price(gold,"IR_COIN_EMAMI")} تومان
+🌕 سکه بهار آزادی : {price(gold,"IR_COIN_BAHAR")} تومان
+🌕 نیم سکه : {price(gold,"IR_COIN_HALF")} تومان
+🌕 ربع سکه : {price(gold,"IR_COIN_QUARTER")} تومان
+🌕 سکه گرمی : {price(gold,"IR_COIN_1G")} تومان
 """
 
-
-
-# =========================
+#=========================
 # ارسال بله
-# =========================
+#=========================
 
 requests.post(
     f"https://tapi.bale.ai/bot{BALE_TOKEN}/sendMessage",
     data={
-        "chat_id": BALE_CHANNEL,
-        "text": message
+        "chat_id":BALE_CHANNEL,
+        "text":message+"\n\n📢 @goldha"
     }
 )
 
-
-
-# =========================
+#=========================
 # ارسال روبیکا
-# =========================
+#=========================
 
 requests.post(
     f"https://botapi.rubika.ir/v3/{RUBIK_TOKEN}/sendMessage",
     json={
-        "chat_id": RUBIKA_CHANNEL,
-        "text": message
+        "chat_id":RUBIKA_CHANNEL,
+        "text":message+"\n\n📢 @gold_pric"
     }
 )
 
-
-
-print(message)
-print("USD:",usd)
-print("GOLD:",gold18)
+print("Done")
