@@ -25,9 +25,7 @@ for row in data:
         break
 
 message = f"""💵 قیمت لحظه‌ای دلار
-
 💰 {price} ریال
-
 🕒 آخرین بروزرسانی:
 {time}
 
