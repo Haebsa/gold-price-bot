@@ -1,12 +1,5 @@
-import requests
+from scraper import get_prices
 
-url = "https://www.tgju.org/"
+prices = get_prices()
 
-headers = {
-    "User-Agent": "Mozilla/5.0"
-}
-
-response = requests.get(url, headers=headers)
-
-print("Status:", response.status_code)
-print(response.text[:1000])
+print(prices)
