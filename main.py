@@ -23,8 +23,12 @@ headers = {
 
 url = f"https://Api.BrsApi.ir/Market/Gold_Currency.php?key={BRS_KEY}"
 
-data = requests.get(url,headers=headers).json()
+response = requests.get(url, headers=headers)
 
+print(response.status_code)
+print(response.text)
+
+exit()
 gold = {i["symbol"]:i for i in data["gold"]}
 cur = {i["symbol"]:i for i in data["currency"]}
 
