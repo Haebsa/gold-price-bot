@@ -1,17 +1,21 @@
 import requests
+import re
 
-urls = {
-    "dollar": "https://www.tgju.org/profile/price_dollar_rl",
-    "gold18": "https://www.tgju.org/profile/geram18"
-}
+url = "https://www.tgju.org/profile/price_dollar_rl"
 
 headers = {
     "User-Agent": "Mozilla/5.0"
 }
 
-for name, url in urls.items():
-    r = requests.get(url, headers=headers)
-    print("=" * 40)
-    print(name)
-    print(r.status_code)
-    print(r.text[:1500])
+html = requests.get(url, headers=headers).text
+
+for x in [
+    "api.tgju.org",
+    "__NEXT_DATA__",
+    "price",
+    "fetch(",
+    "axios",
+    "market"
+]:
+    print("======", x)
+    print(x in html)
