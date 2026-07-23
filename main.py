@@ -1,13 +1,11 @@
 import os
 import requests
+import json
 
-TOKEN = os.environ.get("BALE_TOKEN")
+TOKEN = os.environ["BALE_TOKEN"]
 
-print("TOKEN EXISTS:", TOKEN is not None)
-
-url = f"https://tapi.bale.ai/bot{TOKEN}/getMe"
+url = f"https://tapi.bale.ai/bot{TOKEN}/getUpdates"
 
 response = requests.get(url)
 
-print("Status:", response.status_code)
-print("Response:", response.text)
+print(json.dumps(response.json(), indent=2, ensure_ascii=False))
