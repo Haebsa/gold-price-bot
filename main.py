@@ -3,31 +3,9 @@ import requests
 
 TOKEN = os.environ.get("BALE_TOKEN")
 
-CHANNEL_ID =  "@goldha"
+url = f"https://tapi.bale.ai/bot{TOKEN}/getMe"
 
-message = """
-✅ ربات قیمت طلا و دلار فعال شد
-
-سیستم ارسال خودکار با موفقیت راه‌اندازی شد.
-"""
-
-url = f"https://tapi.bale.ai/bot{TOKEN}/sendMessage"
-
-data = {
-    "chat_id": CHANNEL_ID,
-    "text": message
-}
-
-response = requests.post(
-    url,
-    json={
-        "chat_id": "@goldha",
-        "text": message
-    }
-)
+response = requests.get(url)
 
 print(response.status_code)
 print(response.text)
-
-print("Status:", response.status_code)
-print("Response:", response.text)
